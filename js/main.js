@@ -26,12 +26,12 @@ const scissorsObj = {
   rock: "Perdiste",
 };
 
-const random = () => {
-  return Math.floor(Math.random() * 3);
+const random = (min, max) => {
+  return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
 const validateWinner = (userSelection) => {
-  let optionPc = optionsGame[random()];
+  let optionPc = optionsGame[random(0, 2)];
   let result = userSelection[optionPc];
 
   let gameResult = {
