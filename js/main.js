@@ -1,30 +1,9 @@
-const rock = document.querySelector("#rock");
-const paper = document.querySelector("#paper");
-const scissors = document.querySelector("#scissors");
+const selectionOptions = document.querySelectorAll(".game img");
 const scoreUser = document.querySelector(".score__user");
 const scorePc = document.querySelector(".score__pc");
-let scoreUser1 = 0;
-let scorePc1 = 0;
-
 const optionsGame = ["rock", "paper", "scissors"];
-
-const rockObj = {
-  rock: "Empataste",
-  paper: "Perdiste",
-  scissors: "Ganaste",
-};
-
-const paperObj = {
-  paper: "Empataste",
-  rock: "Ganaste",
-  scissors: "Perdiste",
-};
-
-const scissorsObj = {
-  scissors: "Empataste",
-  paper: "Ganaste",
-  rock: "Perdiste",
-};
+let userScore = 0;
+let pcScore = 0;
 
 const random = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -32,7 +11,15 @@ const random = (min, max) => {
 
 const validateWinner = (userSelection) => {
   let optionPc = optionsGame[random(0, 2)];
-  let result = userSelection[optionPc];
+  let result;
+
+  optionPc === userSelection
+    ? (result = "Empate")
+    : (userSelection === "rock" && optionPc === "scissors") ||
+      (userSelection === "paper" && optionPc === "rock") ||
+      (userSelection === "scissors" && optionPc === "paper")
+    ? (result = "Ganaste")
+    : (result = "Perdiste");
 
   let gameResult = {
     optionPc,
@@ -43,17 +30,17 @@ const validateWinner = (userSelection) => {
 };
 
 const updateScore = (result) => {
-  if (result !== "Empataste") result === "Ganaste" ? scoreUser1++ : scorePc1++;
+  if (result !== "Empate") result === "Ganaste" ? userScore++ : pcScore++;
 
-  scoreUser.innerHTML = `${scoreUser1}`;
-  scorePc.innerHTML = `${scorePc1}`;
+  scoreUser.innerHTML = `${userScore}`;
+  scorePc.innerHTML = `${pcScore}`;
 };
 
 const showAlert = (option, result) => {
   const icon = {
     Ganaste: "success",
     Perdiste: "error",
-    Empataste: "info",
+    Empate: "info",
   };
 
   Swal.fire({
@@ -65,23 +52,17 @@ const showAlert = (option, result) => {
   });
 };
 
-rock.addEventListener("click", () => {
-  let gameResult = validateWinner(rockObj);
+const game = (userSelection) => {
+  const gameResult = validateWinner(userSelection);
 
   updateScore(gameResult.result);
   showAlert(gameResult.optionPc, gameResult.result);
-});
+};
 
-paper.addEventListener("click", () => {
-  let gameResult = validateWinner(paperObj);
+for (let i = 0; i < selectionOptions.length; i++) {
+  selectionOptions[i].addEventListener("click", () => {
+    const userSelection = selectionOptions[i].id;
 
-  updateScore(gameResult.result);
-  showAlert(gameResult.optionPc, gameResult.result);
-});
-
-scissors.addEventListener("click", () => {
-  let gameResult = validateWinner(scissorsObj);
-
-  updateScore(gameResult.result);
-  showAlert(gameResult.optionPc, gameResult.result);
-});
+    game(userSelection);
+  });
+}
